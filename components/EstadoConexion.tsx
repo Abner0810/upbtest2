@@ -34,28 +34,26 @@ function Item({
 }
 
 export default function EstadoConexion() {
-  const [backend, setBackend] = useState<Estado>("cargando");
-  const [db, setDb] = useState<Estado>("cargando");
-  const [detalleDb, setDetalleDb] = useState<string>();
+  const sinApi = !API;
+  const [backend, setBackend] = useState<Estado>(sinApi ? "error" : "cargando");
+  const [db, setDb] = useState<Estado>(sinApi ? "error" : "cargando");
+  const [detalleDb, setDetalleDb] = useState<string | undefined>(
+    sinApi ? "NEXT_PUBLIC_API_URL no definida" : undefined,
+  );
 
   useEffect(() => {
-    if (!API) {
-      setBackend("error");
-      setDb("error");
-      setDetalleDb("NEXT_PUBLIC_API_URL no definida");
-      return;
-    }
+    if (!API) return;
 
     fetch(`${API}/`)
       .then((r) => (r.ok ? setBackend("ok") : Promise.reject(r.status)))
-      .catch((e) => setBackend("error"));
+      .catch(() => setBackend("error"));
 
     fetch(`${API}/api/productos`)
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
       .then(() => setDb("ok"))
-      .catch((e) => {
+      .catch((err) => {
         setDb("error");
-        setDetalleDb(String(e));
+        setDetalleDb(String(err));
       });
   }, []);
 
