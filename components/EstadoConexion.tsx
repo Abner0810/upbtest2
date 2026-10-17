@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -40,8 +40,9 @@ export default function EstadoConexion() {
   const [detalleDb, setDetalleDb] = useState<string | undefined>(
     sinApi ? "NEXT_PUBLIC_API_URL no definida" : undefined,
   );
+  const [probando, setProbando] = useState(false);
 
-  useEffect(() => {
+  const consultar = useCallback(() => {
     if (!API) return;
 
     fetch(`${API}/`)
@@ -56,6 +57,19 @@ export default function EstadoConexion() {
         setDetalleDb(String(err));
       });
   }, []);
+
+  useEffect(() => {
+    consultar();
+  }, [consultar]);
+
+  const reintentar = () => {
+    setProbando(true);
+    setBackend("cargando");
+    setDb("cargando");
+    setDetalleDb(undefined);
+    consultar();
+    window.setTimeout(() => setProbando(false), 600);
+  };
 
   return (
     <div
@@ -77,6 +91,26 @@ export default function EstadoConexion() {
       <Item label="Frontend" estado="ok" />
       <Item label="Backend" estado={backend} />
       <Item label="Base de datos" estado={db} detalle={detalleDb} />
+
+      <button
+        type="button"
+        onClick={reintentar}
+        disabled={probando}
+        style={{
+          marginTop: 10,
+          width: "100%",
+          padding: "8px 12px",
+          borderRadius: 8,
+          border: "none",
+          cursor: probando ? "wait" : "pointer",
+          fontWeight: 600,
+          background: probando ? "#475569" : "#3b82f6",
+          color: "#fff",
+        }}
+      >
+        {probando ? "Probando..." : "Probar conexión"}
+      </button>
+
       <div style={{ marginTop: 8, fontSize: 11, color: "#94a3b8" }}>API: {API}</div>
     </div>
   );
