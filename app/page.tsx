@@ -1,3 +1,5 @@
+import EstadoConexion from "@/components/EstadoConexion";
+
 const rewards = [
   {
     number: "01",
@@ -184,6 +186,8 @@ export default function Home() {
         <p>Hecho para celebrar cada pequeño gran paso.</p>
         <span className="footer-year">© Puntitos Extra</span>
       </footer>
+
+      <EstadoConexion />
     </>
   );
 }
