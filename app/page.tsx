@@ -1,4 +1,5 @@
 import EstadoConexion from "@/components/EstadoConexion";
+import PuntitoAbner from "@/components/PuntitoAbner";
 
 const rewards = [
   {
@@ -187,6 +188,7 @@ export default function Home() {
         <span className="footer-year">© Puntitos Extra</span>
       </footer>
 
+      <PuntitoAbner />
       <EstadoConexion />
     </>
   );
